@@ -17,11 +17,14 @@ public class LocalHostRouteConfiguration {
     public RouteLocator localHostRoutes(RouteLocatorBuilder builder){
         return builder.routes()
                 .route(r->r.path("/api/v1/medicine*", "/api/v1/medicine/*", "/api/v1/medicineUpc/*")
-                            .uri("http://localhost:8080"))
+                            .uri("http://localhost:8080")
+                            .id("medicine-service"))
                 .route(r->r.path("/api/v1/customers/**")
-                        .uri("http://localhost:8081"))
+                        .uri("http://localhost:8081")
+                        .id("medicine-order-service"))
                 .route(r->r.path("/api/v1/medicine/*/inventory")
-                        .uri("http://localhost:8082"))
+                        .uri("http://localhost:8082")
+                        .id("medicine-inventory-service"))
                 .build();
     }
 }

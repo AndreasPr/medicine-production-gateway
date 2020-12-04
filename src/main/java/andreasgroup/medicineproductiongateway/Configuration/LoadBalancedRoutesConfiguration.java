@@ -17,16 +17,20 @@ public class LoadBalancedRoutesConfiguration {
     public RouteLocator loadBalandedRoutes(RouteLocatorBuilder builder){
         return builder.routes()
                 .route(r-> r.path("/api/v1/medicine*", "/api/v1/medicine/*", "/api/v1/medicineUpc/*")
-                            .uri("lb://medicine-service"))
+                            .uri("lb://medicine-service")
+                            .id("medicine-service"))
                 .route(r->r.path("/api/v1/customers/**")
-                            .uri("lb://medicine-order-service"))
+                            .uri("lb://medicine-order-service")
+                            .id("medicine-order-service"))
                 .route(r -> r.path("/api/v1/medicine/*/inventory")
                             .filters(f->f.circuitBreaker(c->c.setName("inventoryCB")
-                                        .setFallbackUri("forward:/inventory-failover")
-                                        .setRouteId("inv-failover")))
-                            .uri("lb://medicine-inventory-service"))
-                .route(r->r.path("/inventory-failover/**")
-                            .uri("lb://medicine-inventory-failover"))
+                                        .setFallbackUri("forward:/medicine-inventory-failover")
+                                        .setRouteId("medicine-inventory-failover")))
+                            .uri("lb://medicine-inventory-service")
+                            .id("medicine-inventory-service"))
+                .route(r->r.path("/medicine-inventory-failover/**")
+                            .uri("lb://medicine-inventory-failover")
+                            .id("medicine-inventory-failover"))
                 .build();
     }
 }
